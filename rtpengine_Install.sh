@@ -9,6 +9,7 @@ rtpengineSRC="$src/rtpengine"
 kernelBuild="/usr/lib/modules/$(uname -r)/build/"
 extraModules="/lib/modules/$(uname -r)/extra"
 xtablesModules="/lib64/xtables"
+rtpengineBin="/usr/sbin"
 
 # Install Some Packages
 dnf -y install git glib2 glib2-devel gcc zlib zlib-devel openssl openssl-devel pcre pcre-devel libcurl libcurl-devel xmlrpc-c xmlrpc-c-devel
@@ -23,7 +24,7 @@ git clone https://github.com/sipwise/rtpengine.git $src
 cd "$rtpengineSRC/daemon";make
 
 # Install the daemon, No "install" rule in th Makefile
-cp rtpengine /usr/sbin/rtpengine
+cp -u rtpengine $rtpengineBin
 
 # Install the header files of the iptables
 dnf -y install iptables-devel
@@ -31,7 +32,7 @@ dnf -y install iptables-devel
 # Compile and Install The iptables extension "libxt_RTPENGINE"
 cd "$rtpengineSRC/iptables-extension";make
 # Install the extension
-cp libxt_RTPENGINE.so "$xtablesModules"
+cp -u libxt_RTPENGINE.so "$xtablesModules"
 
 # Install the kernel header files
 dnf -y install kernel-devel-$(uname -r)
@@ -42,7 +43,7 @@ fi
 
 # Compile and Install the kernel module "xt_RTPENGINE"
 cd "$rtpengineSRC/kernel-module";make
-cp xt_RTPENGINE.ko $extraModules
+cp -u xt_RTPENGINE.ko $extraModules
 
 # Create a list of modules dependencies
 depmod  -a
